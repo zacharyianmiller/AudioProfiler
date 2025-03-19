@@ -20,8 +20,7 @@ namespace AudioProfiler
 struct Profile
 {
     double value;
-    juce::String* label = new juce::String;
-//    std::unique_ptr<juce::String> label;
+    juce::String* label;
 };
 
 }; // namespace AudioProfiler

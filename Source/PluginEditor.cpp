@@ -57,8 +57,11 @@ void AudioProfilerDemoAudioProcessorEditor::timerCallback()
     elapsedTime = audioProcessor.getElapsedTime().load();
     
     profileTime = audioProcessor.getProfile().load().value;
-    profileLabel = *(audioProcessor.getProfile().load()).label;
     
+    auto temp = audioProcessor.getProfile().load().label;
+    if (temp != NULL)
+        profileLabel = *temp;
+        
     repaint();
 }
 
