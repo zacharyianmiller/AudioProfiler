@@ -23,4 +23,16 @@ struct Profile
     juce::String* label;
 };
 
+inline void allocateResources (AudioProfiler::Profile* targetProfilePtr,
+                               juce::String targetName = "DEFAULT")
+{
+    (*targetProfilePtr).label = new juce::String (targetName);
+}
+
+inline void releaseResources (AudioProfiler::Profile* targetProfilePtr)
+{
+    delete (*targetProfilePtr).label;
+    (*targetProfilePtr).label = nullptr; // prevent dangling ptr
+}
+
 }; // namespace AudioProfiler

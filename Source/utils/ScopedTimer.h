@@ -19,20 +19,20 @@ public:
     explicit ScopedTimer (AudioProfiler::Profile* targetProfilePtr, juce::String targetName) : profilePtr(targetProfilePtr), name(targetName)
     {
         timer.start();
-        (*profilePtr).label = new juce::String (name);
+        AudioProfiler::allocateResources(profilePtr, name); // raw
     };
     
     ~ScopedTimer()
     {
         timer.stop();
         
+        /* Assign values to ScopedTimer's unique profile struct */
         if (profilePtr != nullptr)
         {
             (*profilePtr).value = timer.getElapsedMilliseconds (false);
             *(*profilePtr).label = name;
             
-            delete (*profilePtr).label;
-            (*profilePtr).label = nullptr;
+            AudioProfiler::releaseResources(profilePtr); // raw
         }
     };
         
