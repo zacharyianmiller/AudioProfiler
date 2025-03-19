@@ -15,6 +15,7 @@ void BasicAudioEffect::processBuffer (const float *input,
     }
 }
 ```
+The ``&effectProfile`` should be instantiated once per algorithm - most easily stored as a private member of a DSP effect class. In this example, ``effectProfile`` is accessed via the main API as ``AudioProfiler::Profile audioProfile`` and is necessary to passed by reference in your **ScopedTimer** constructor.
 
 ## Future Additions
 * Multiple algorithm support
