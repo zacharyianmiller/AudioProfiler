@@ -14,25 +14,15 @@
 #include <chrono>
 #include <string>
 
+#define MAX_NUM_PROFILES 15
+
 namespace AudioProfiler
 {
 
 struct Profile
 {
     double value;
-    juce::String* label;
+    std::string label;
 };
-
-inline void allocateResources (AudioProfiler::Profile* targetProfilePtr,
-                               juce::String targetName = "DEFAULT")
-{
-    (*targetProfilePtr).label = new juce::String (targetName);
-}
-
-inline void releaseResources (AudioProfiler::Profile* targetProfilePtr)
-{
-    delete (*targetProfilePtr).label;
-    (*targetProfilePtr).label = nullptr; // prevent dangling ptr
-}
 
 }; // namespace AudioProfiler

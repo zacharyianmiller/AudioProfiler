@@ -12,6 +12,12 @@
       <FILE id="LnrJrE" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="wF9aBr" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <GROUP id="{37A52CA7-01CC-D0A3-AE65-31DF87E591C8}" name="GUI">
+        <FILE id="DLQ7lO" name="ProfileDisplayComponent.cpp" compile="1" resource="0"
+              file="Source/GUI/ProfileDisplayComponent.cpp"/>
+        <FILE id="XbtmDj" name="ProfileDisplayComponent.h" compile="0" resource="0"
+              file="Source/GUI/ProfileDisplayComponent.h"/>
+      </GROUP>
       <GROUP id="{07B27581-D560-AC74-3B31-E6663D9FFDBD}" name="DSP">
         <FILE id="NiaYTx" name="DemoEffect.cpp" compile="1" resource="0" file="Source/DSP/DemoEffect.cpp"/>
         <FILE id="cKceMU" name="DemoEffect.h" compile="0" resource="0" file="Source/DSP/DemoEffect.h"/>

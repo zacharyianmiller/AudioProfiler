@@ -17,22 +17,75 @@ void DemoEffect::prepare (double targetFs,
     this->bufferSize = targetBufferSize;
 }
 
-float DemoEffect::processSample (float input)
-{
-    /* Simulate work */
-    std::this_thread::sleep_for(std::chrono::nanoseconds(100000)); // 1e5ns
-    return input;
-}
-
 void DemoEffect::processBuffer (const float *input,
                                 float *output,
                                 size_t numSamples)
 {
-    ScopedTimer sTimer (&effectProfile, juce::String("SleepThreadAlgorithm"));
-    for (size_t n = 0; n < numSamples; ++n)
+    updateParameters();
+    
+    // Algorithm #1
     {
-        output[n] = processSample (input[n]);
+        ScopedTimer sTimer (&algorithmProfile[0], std::string("SleepThread1"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 52)));
     }
+    effectProfiles.at(0) = algorithmProfile[0];
+
+    // Algorithm #2
+    {
+        ScopedTimer sTimer (&algorithmProfile[1], std::string("SleepThread2"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 80)));
+    }
+    effectProfiles.at(1) = algorithmProfile[1];
+
+    // Algorithm #3
+    {
+        ScopedTimer sTimer (&algorithmProfile[2], std::string("SleepThread3"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 5)));
+    }
+    effectProfiles.at(2) = algorithmProfile[2];
+
+    // Algorithm #4
+    {
+        ScopedTimer sTimer (&algorithmProfile[3], std::string("SleepThread4"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 19)));
+    }
+    effectProfiles.at(3) = algorithmProfile[3];
+
+    // Algorithm #5
+    {
+        ScopedTimer sTimer (&algorithmProfile[4], std::string("SleepThread5"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 98)));
+    }
+    effectProfiles.at(4) = algorithmProfile[4];
+
+    // Algorithm #6
+    {
+        ScopedTimer sTimer (&algorithmProfile[5], std::string("SleepThread6"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 11)));
+    }
+    effectProfiles.at(5) = algorithmProfile[5];
+
+    // Algorithm #7
+    {
+        ScopedTimer sTimer (&algorithmProfile[6], std::string("SleepThread7"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 7)));
+    }
+    effectProfiles.at(6) = algorithmProfile[6];
+
+    // Algorithm #8
+    {
+        ScopedTimer sTimer (&algorithmProfile[7], std::string("SleepThread8"));
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(sleepValue * 2)));
+    }
+    effectProfiles.at(7) = algorithmProfile[7];
 }
 
-AudioProfiler::Profile DemoEffect::getProfile() { return effectProfile; }
+void DemoEffect::updateParameters()
+{
+    if (*sleepAtomic != sleepValue) { sleepValue = *sleepAtomic; }
+}
+
+std::array<AudioProfiler::Profile, MAX_NUM_PROFILES> DemoEffect::getProfiles()
+{
+    return effectProfiles;
+}

@@ -59,27 +59,22 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
-    //==============================================================================
-    std::atomic<double> getElapsedTime()
+    //==============================================================================    
+    std::atomic<std::array<AudioProfiler::Profile, MAX_NUM_PROFILES>*> getProfiles()
     {
-        return std::atomic(timer.getElapsedMilliseconds(true));
+        localProfiles = effect.getProfiles();
+        return std::atomic<std::array<AudioProfiler::Profile, MAX_NUM_PROFILES>*>(&localProfiles);
     }
     
-    std::atomic<AudioProfiler::Profile> getProfile()
-    {
-        return std::atomic<AudioProfiler::Profile>(effect.getProfile());
-    }
-    
+    /* APVTS */
+    juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    juce::AudioProcessorValueTreeState apvts { *this, nullptr, "Parameters", createParameterLayout() };
+
 private:
     
-    // Base effect
     DemoEffect effect;
-    
-    // Standard timer
-    Timer timer;
-    bool hasStarted = true; // ignore call after init start
-    double elapsedTime = 0.0; // default ms
-    
+    std::array<AudioProfiler::Profile, MAX_NUM_PROFILES> localProfiles;
+        
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioProfilerDemoAudioProcessor)
 };

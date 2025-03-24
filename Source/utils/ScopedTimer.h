@@ -16,10 +16,13 @@ class ScopedTimer
 {
 public:
     
-    explicit ScopedTimer (AudioProfiler::Profile* targetProfilePtr, juce::String targetName) : profilePtr(targetProfilePtr), name(targetName)
+    explicit ScopedTimer (AudioProfiler::Profile* targetProfilePtr,
+                          std::string targetName) : profilePtr(targetProfilePtr)
     {
+        name = targetName.c_str();
+        
         timer.start();
-        AudioProfiler::allocateResources(profilePtr, name); // raw
+        (*targetProfilePtr).label = targetName;
     };
     
     ~ScopedTimer()
@@ -30,9 +33,7 @@ public:
         if (profilePtr != nullptr)
         {
             (*profilePtr).value = timer.getElapsedMilliseconds (false);
-            *(*profilePtr).label = name;
-            
-            AudioProfiler::releaseResources(profilePtr); // raw
+            (*profilePtr).label = name;
         }
     };
         
@@ -41,7 +42,7 @@ private:
     Timer timer;
     
     AudioProfiler::Profile* profilePtr;
-    const juce::String name = "DEFAULT";
+    const char* name;
         
     // ===================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScopedTimer);

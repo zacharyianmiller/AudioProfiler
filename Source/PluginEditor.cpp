@@ -13,60 +13,44 @@
 
 //==============================================================================
 AudioProfilerDemoAudioProcessorEditor::AudioProfilerDemoAudioProcessorEditor (AudioProfilerDemoAudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
+: AudioProcessorEditor (&p), audioProcessor (p), profileDisplayComponent(p)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (400, 300);
-    startTimerHz (150);
+    setSize (400, 200);
+    
+    /* Slider */
+    addAndMakeVisible(loadSimulationSlider);
+    loadSimulationSlider.setBounds(50, 25, 300, 50);
+    
+    loadSimulationSliderAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (audioProcessor.apvts,
+                                                                                                             "SLEEP",
+                                                                                                             loadSimulationSlider);
+
+    /* Viewport */
+    addAndMakeVisible (profilesViewport);
+    profilesViewport.setBounds (50, 75, 300, 100);
+    profilesViewport.setViewedComponent (&profileDisplayComponent, false);
+   
+    /* ...look and feel */
+    profilesViewport.setScrollBarsShown (true, false); // horizontal scroll off
+    profilesViewport.setScrollBarPosition (false, false);
+    profilesViewport.setScrollBarThickness (6);
+    getLookAndFeel().setColour (juce::ScrollBar::thumbColourId, grey);
 }
 
 AudioProfilerDemoAudioProcessorEditor::~AudioProfilerDemoAudioProcessorEditor()
 {
-    stopTimer();
 }
 
 //==============================================================================
 void AudioProfilerDemoAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    
-    if (!showScoped)
-        g.drawFittedText (getFormattedTime(elapsedTime),
-                          getLocalBounds(),
-                          juce::Justification::centred, 1);
-    
-    if (showScoped)
-        g.drawFittedText (juce::String(profileLabel + ": " + getFormattedTime(profileTime)),
-                          getLocalBounds(),
-                          juce::Justification::centred, 1);
+    g.fillAll (darkgrey); // background
+    g.setColour (grey);
+    g.drawRect (profilesViewport.getBounds());
 }
 
 void AudioProfilerDemoAudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
-}
-
-void AudioProfilerDemoAudioProcessorEditor::timerCallback()
-{
-    elapsedTime = audioProcessor.getElapsedTime().load();
-    
-    profileTime = audioProcessor.getProfile().load().value;
-    
-    auto temp = audioProcessor.getProfile().load().label;
-    if (temp != NULL)
-        profileLabel = *temp;
-        
-    repaint();
-}
-
-juce::String AudioProfilerDemoAudioProcessorEditor::getFormattedTime (double timeMs)
-{
-    double outnum = std::round((timeMs * 10.0)) / 10.0; // one sig fig
-    return (std::round(outnum) - outnum == 0) ? juce::String(outnum) + ".0" : juce::String(outnum);
 }

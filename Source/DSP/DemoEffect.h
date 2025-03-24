@@ -15,26 +15,40 @@
 #include "../utils/ScopedTimer.h"
 #include "../utils/StandardIncludes.h"
 
+#define NUM_ALGORITHMS_FOR_TESTING 8
+
 class DemoEffect
 {
 public:
     
-    DemoEffect() = default;
-    ~DemoEffect() {};
+    DemoEffect(juce::AudioProcessorValueTreeState& apvts)
+    {
+        sleepAtomic = apvts.getRawParameterValue("SLEEP");
+    };
+    
+    ~DemoEffect()
+    {
+    };
     
     void prepare (double targetFs, size_t targetBufferSize);
     
     float processSample (float input);
     void processBuffer (const float* input, float* output, size_t numSamples);
         
-    AudioProfiler::Profile getProfile(); // scoped only
+    void updateParameters();
+    
+    std::array<AudioProfiler::Profile, MAX_NUM_PROFILES> getProfiles();
     
 private:
     
     double Fs = -1.0;
     size_t bufferSize;
     
-    AudioProfiler::Profile effectProfile;
+    std::atomic<float>* sleepAtomic;
+    float sleepValue = 0.f;
+    
+    AudioProfiler::Profile algorithmProfile[MAX_NUM_PROFILES];
+    std::array<AudioProfiler::Profile, MAX_NUM_PROFILES> effectProfiles;
         
     // ===================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DemoEffect);

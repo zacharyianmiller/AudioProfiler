@@ -10,12 +10,12 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "GUI/ProfileDisplayComponent.h"
 
 //==============================================================================
 /**
 */
-class AudioProfilerDemoAudioProcessorEditor  : public juce::AudioProcessorEditor,
-                                             public juce::Timer
+class AudioProfilerDemoAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:
     AudioProfilerDemoAudioProcessorEditor (AudioProfilerDemoAudioProcessor&);
@@ -24,23 +24,22 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
-
-    //==============================================================================
-    void timerCallback() override;
     
 private:
-    // This reference is provided as a quick way for your editor to
-    // access the processor object that created it.
+
     AudioProfilerDemoAudioProcessor& audioProcessor;
     
-    // Standard timer
-    juce::String getFormattedTime (double timeMs);
-    double elapsedTime = 0.0; // received from processor
+    /* Load simulation (thread sleep) slider */
+    juce::Slider loadSimulationSlider;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> loadSimulationSliderAttachment;
     
-    // Scoped timer
-    bool showScoped = true;
-    double profileTime = 0.0;
-    juce::String profileLabel;
+    /* Scroll window for profiles */
+    juce::Viewport profilesViewport;
+    ProfileDisplayComponent profileDisplayComponent;
+    
+    /* Colors */
+    const juce::Colour darkgrey = juce::Colour(35, 35, 35);
+    const juce::Colour grey = juce::Colour(74, 74, 74);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioProfilerDemoAudioProcessorEditor)
 };
