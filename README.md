@@ -22,5 +22,5 @@ AudioProfiler::Profile audioProfile
 and is necessary to passed by reference in your **ScopedTimer** constructor.
 
 ## Future Additions
-* Multiple algorithm support
-* Separate profiling window rather than using the JUCE project's **Editor** window 
+* Separate profiling window rather than using the JUCE project's **Editor** window
+* Have scoped timers from multiple effect classes populate in the same window
